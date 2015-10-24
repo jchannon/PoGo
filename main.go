@@ -1,11 +1,17 @@
 package main
 
 import (
+	//"flag"
 	"flag"
 	"fmt"
 	"log"
 	"os"
-    "github.com/jchannon/gofavpocket/twitter"
+	//"log"
+	//"os"
+
+	"github.com/jchannon/gofavpocket/pocket"
+	"github.com/jchannon/gofavpocket/twitter"
+	//"github.com/jchannon/gofavpocket/twitter"
 )
 
 func usage() {
@@ -44,10 +50,15 @@ func main() {
 		log.Fatal(err)
 	}
 
+	data := pocket.GetPocketRequestToken("http://google.co.uk")
+
+	fmt.Println(data)
+	_, kkk := pocket.GetPocketAccessToken(data, "http://yahoo.co.uk")
+
 	for _, tweet := range favourites {
-		fmt.Println(tweet.Text)
+
+		pocket.AddItemToPocket(kkk, tweet.User.ScreenName, tweet.Id)
+		break
 	}
-	//data := GetPocketRequestToken("http://google.co.uk")
-	//twitter.
-	//fmt.Println(data)
+
 }

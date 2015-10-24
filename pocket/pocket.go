@@ -4,13 +4,17 @@ Takes care of OAuth to the Pocket service.
 To use, need to set Pocket API consumer key as environment variable POCKET_API_KEY.
 
 */
-package main
+package pocket
 
 import (
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
+	"time"
+
+	"github.com/pkg/browser"
 )
 
 const (
@@ -57,8 +61,11 @@ func GetPocketRequestToken(callbackUrl string) string {
 	return values.Get("code")
 }
 
-func GetPocketAccessToken(code string) (string, string) {
+func GetPocketAccessToken(code string, callbackUrl string) (string, string) {
 	apiKey := apiCredentials()
+
+	browser.OpenURL("https://getpocket.com/auth/authorize?request_token=" + code + "&redirect_uri=" + callbackUrl)
+	time.Sleep(time.Millisecond * 10000)
 	resp, err := http.PostForm(
 		"https://getpocket.com/v3/oauth/authorize",
 		url.Values{"consumer_key": {apiKey}, "code": {code}},
@@ -68,5 +75,23 @@ func GetPocketAccessToken(code string) (string, string) {
 		log.Fatalf("Error getting code from Pocket: %v", err)
 	}
 	values, err := responseBodyAsValues(resp)
+	log.Println(err)
+	log.Println(values)
 	return values.Get("username"), values.Get("access_token")
+
+}
+
+func AddItemToPocket(access_token string, screenname string, tweet_id int64) {
+	apiKey := apiCredentials()
+	resp, err := http.PostForm(
+		"https://getpocket.com/v3/add",
+		url.Values{"consumer_key": {apiKey}, "access_token": {access_token}, "url": {"https://twitter.com/" + screenname + "/status/" + strconv.FormatInt(tweet_id, 10)}, "tweet_id": {strconv.FormatInt(tweet_id, 10)}},
+	)
+
+	if err != nil {
+		log.Fatalf("Error getting code from Pocket: %v", err)
+	}
+	values, err := responseBodyAsValues(resp)
+	log.Println(err)
+	log.Println(values)
 }
