@@ -32,30 +32,21 @@ func responseBodyAsValues(r *http.Response) (url.Values, error) {
 // process.
 func GetPocketRequestToken(apiKey *string, callbackUrl string) string {
 	apikeyValue := *apiKey
-	log.Println("creds")
-	log.Println(apiKey)
 	resp, err := http.PostForm(
 		"https://getpocket.com/v3/oauth/request",
 		url.Values{"consumer_key": {apikeyValue}, "redirect_uri": {callbackUrl}},
 	)
-	log.Println("got creds")
-	log.Println(err)
 
 	if err != nil {
 		log.Fatalf("Error getting code from Pocket: %v", err)
 	}
 	values, err := responseBodyAsValues(resp)
-	log.Println(err)
-	log.Println(values)
-	log.Println(values.Get("code"))
 
 	return values.Get("code")
 }
 
 func AuthorizePocket(code string, callbackUrl string) {
-
 	browser.OpenURL("https://getpocket.com/auth/authorize?request_token=" + code + "&redirect_uri=" + callbackUrl)
-
 }
 
 func GetPocketAccessToken(apiKey *string, code string, callbackUrl string) (string, string) {
@@ -69,14 +60,13 @@ func GetPocketAccessToken(apiKey *string, code string, callbackUrl string) (stri
 		log.Fatalf("Error getting code from Pocket: %v", err)
 	}
 	values, err := responseBodyAsValues(resp)
-	log.Println(err)
-	log.Println(values)
+
 	return values.Get("username"), values.Get("access_token")
 }
 
 func AddItemToPocket(apiKey *string, access_token string, tweeturl string, tweet_id int64) {
 	apikeyValue := *apiKey
-	resp, err := http.PostForm(
+	_, err := http.PostForm(
 		"https://getpocket.com/v3/add",
 		url.Values{"consumer_key": {apikeyValue}, "access_token": {access_token}, "url": {tweeturl}, "tweet_id": {strconv.FormatInt(tweet_id, 10)}},
 	)
@@ -84,7 +74,5 @@ func AddItemToPocket(apiKey *string, access_token string, tweeturl string, tweet
 	if err != nil {
 		log.Fatalf("Error getting code from Pocket: %v", err)
 	}
-	values, err := responseBodyAsValues(resp)
-	log.Println(err)
-	log.Println(values)
+	//responseBodyAsValues(resp)
 }

@@ -73,6 +73,7 @@ func main() {
 				}
 				ext := filepath.Ext(url.Path)
 				if len(ext) == 0 || ext == "html" {
+
 					addUrlInTweetToPocket(apiKey, pocketaccesstoken, tweeturl.Expanded_url, tweet.Id)
 				} //else {
 				//addBasicTweetToPocket(apiKey, pocketaccesstoken, tweet)
@@ -89,9 +90,11 @@ func main() {
 
 func addBasicTweetToPocket(apiKey *string, accesstoken string, tweet anaconda.Tweet) {
 	pocketurl := "https://twitter.com/" + tweet.User.ScreenName + "/status/" + strconv.FormatInt(tweet.Id, 10)
+	fmt.Println(pocketurl)
 	pocket.AddItemToPocket(apiKey, accesstoken, pocketurl, tweet.Id)
 }
 
 func addUrlInTweetToPocket(apiKey *string, accesstoken string, urlintweet string, Id int64) {
+	fmt.Println("Addiing to pocket : " + urlintweet)
 	pocket.AddItemToPocket(apiKey, accesstoken, urlintweet, Id)
 }
