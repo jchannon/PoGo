@@ -56,7 +56,7 @@ func GetPocketRequestToken(apiKey *string, callbackUrl string) string {
 func GetPocketAccessToken(apiKey *string, code string, callbackUrl string) (string, string) {
 	apikeyValue := *apiKey
 	browser.OpenURL("https://getpocket.com/auth/authorize?request_token=" + code + "&redirect_uri=" + callbackUrl)
-	time.Sleep(time.Millisecond * 10000)
+	time.Sleep(time.Millisecond * 7000)
 	resp, err := http.PostForm(
 		"https://getpocket.com/v3/oauth/authorize",
 		url.Values{"consumer_key": {apikeyValue}, "code": {code}},
@@ -72,11 +72,11 @@ func GetPocketAccessToken(apiKey *string, code string, callbackUrl string) (stri
 
 }
 
-func AddItemToPocket(apiKey *string, access_token string, screenname string, tweet_id int64) {
+func AddItemToPocket(apiKey *string, access_token string, tweeturl string, tweet_id int64) {
 	apikeyValue := *apiKey
 	resp, err := http.PostForm(
 		"https://getpocket.com/v3/add",
-		url.Values{"consumer_key": {apikeyValue}, "access_token": {access_token}, "url": {"https://twitter.com/" + screenname + "/status/" + strconv.FormatInt(tweet_id, 10)}, "tweet_id": {strconv.FormatInt(tweet_id, 10)}},
+		url.Values{"consumer_key": {apikeyValue}, "access_token": {access_token}, "url": {tweeturl}, "tweet_id": {strconv.FormatInt(tweet_id, 10)}},
 	)
 
 	if err != nil {
