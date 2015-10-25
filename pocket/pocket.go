@@ -12,7 +12,6 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
-	"time"
 
 	"github.com/pkg/browser"
 )
@@ -53,10 +52,14 @@ func GetPocketRequestToken(apiKey *string, callbackUrl string) string {
 	return values.Get("code")
 }
 
+func AuthorizePocket(code string, callbackUrl string) {
+
+	browser.OpenURL("https://getpocket.com/auth/authorize?request_token=" + code + "&redirect_uri=" + callbackUrl)
+
+}
+
 func GetPocketAccessToken(apiKey *string, code string, callbackUrl string) (string, string) {
 	apikeyValue := *apiKey
-	browser.OpenURL("https://getpocket.com/auth/authorize?request_token=" + code + "&redirect_uri=" + callbackUrl)
-	time.Sleep(time.Millisecond * 7000)
 	resp, err := http.PostForm(
 		"https://getpocket.com/v3/oauth/authorize",
 		url.Values{"consumer_key": {apikeyValue}, "code": {code}},
@@ -69,7 +72,6 @@ func GetPocketAccessToken(apiKey *string, code string, callbackUrl string) (stri
 	log.Println(err)
 	log.Println(values)
 	return values.Get("username"), values.Get("access_token")
-
 }
 
 func AddItemToPocket(apiKey *string, access_token string, tweeturl string, tweet_id int64) {

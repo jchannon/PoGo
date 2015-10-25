@@ -57,8 +57,11 @@ func main() {
 	}
 
 	data := pocket.GetPocketRequestToken(apiKey, "http://google.co.uk")
-
+	pocket.AuthorizePocket(data, "http://yahoo.co.uk")
 	// fmt.Println(data)
+	fmt.Println("(4) Press Enter when authorized")
+	instr := ""
+	fmt.Scanln(&instr)
 	_, pocketaccesstoken := pocket.GetPocketAccessToken(apiKey, data, "http://yahoo.co.uk")
 
 	for _, tweet := range favourites {
