@@ -17,14 +17,6 @@ import (
 	"github.com/pkg/browser"
 )
 
-const (
-	ENV_API_KEY = "44642-ef80a8999e99444da2f6b65c"
-)
-
-func apiCredentials() string {
-	return ENV_API_KEY // os.Getenv(ENV_API_KEY)
-}
-
 func responseBodyAsValues(r *http.Response) (url.Values, error) {
 
 	body, err := ioutil.ReadAll(r.Body)
@@ -39,13 +31,13 @@ func responseBodyAsValues(r *http.Response) (url.Values, error) {
 
 // GetPocketRequestToken will get the first request token, kicks off the authentication
 // process.
-func GetPocketRequestToken(callbackUrl string) string {
+func GetPocketRequestToken(apiKey *string, callbackUrl string) string {
+	apikeyValue := *apiKey
 	log.Println("creds")
-	apiKey := apiCredentials()
 	log.Println(apiKey)
 	resp, err := http.PostForm(
 		"https://getpocket.com/v3/oauth/request",
-		url.Values{"consumer_key": {apiKey}, "redirect_uri": {callbackUrl}},
+		url.Values{"consumer_key": {apikeyValue}, "redirect_uri": {callbackUrl}},
 	)
 	log.Println("got creds")
 	log.Println(err)
@@ -61,14 +53,13 @@ func GetPocketRequestToken(callbackUrl string) string {
 	return values.Get("code")
 }
 
-func GetPocketAccessToken(code string, callbackUrl string) (string, string) {
-	apiKey := apiCredentials()
-
+func GetPocketAccessToken(apiKey *string, code string, callbackUrl string) (string, string) {
+	apikeyValue := *apiKey
 	browser.OpenURL("https://getpocket.com/auth/authorize?request_token=" + code + "&redirect_uri=" + callbackUrl)
 	time.Sleep(time.Millisecond * 10000)
 	resp, err := http.PostForm(
 		"https://getpocket.com/v3/oauth/authorize",
-		url.Values{"consumer_key": {apiKey}, "code": {code}},
+		url.Values{"consumer_key": {apikeyValue}, "code": {code}},
 	)
 
 	if err != nil {
@@ -81,11 +72,11 @@ func GetPocketAccessToken(code string, callbackUrl string) (string, string) {
 
 }
 
-func AddItemToPocket(access_token string, screenname string, tweet_id int64) {
-	apiKey := apiCredentials()
+func AddItemToPocket(apiKey *string, access_token string, screenname string, tweet_id int64) {
+	apikeyValue := *apiKey
 	resp, err := http.PostForm(
 		"https://getpocket.com/v3/add",
-		url.Values{"consumer_key": {apiKey}, "access_token": {access_token}, "url": {"https://twitter.com/" + screenname + "/status/" + strconv.FormatInt(tweet_id, 10)}, "tweet_id": {strconv.FormatInt(tweet_id, 10)}},
+		url.Values{"consumer_key": {apikeyValue}, "access_token": {access_token}, "url": {"https://twitter.com/" + screenname + "/status/" + strconv.FormatInt(tweet_id, 10)}, "tweet_id": {strconv.FormatInt(tweet_id, 10)}},
 	)
 
 	if err != nil {
