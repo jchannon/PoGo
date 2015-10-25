@@ -10,4 +10,4 @@ Written in Golang, this tool imports Twitter favourites into Pocket.
 
 **Notes:**
 
-This will read tweets marked as favourites.  If the tweet contains no links in the tweet, it will add the link to the tweet into Pocket.  If the tweet contains a link it will add that to Pocket **only** if the URL has no file extension **OR** if the URL has a `.html`.  If the tweet contains a link to something other than the above condition it will be logged to the console that it has not been added to Pocket
+This will read tweets marked as favourites.  If the tweet contains no links in the tweet, it will add the link to the tweet into Pocket.  If the tweet contains a link it will add that to Pocket **only** if the URL has no file extension **OR** if the URL has a `.html` extension.  If the tweet contains a link to something other than the above condition it will be logged to the console that it has not been added to Pocket
