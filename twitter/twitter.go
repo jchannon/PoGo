@@ -12,7 +12,7 @@ import (
 type Twitter struct {
 }
 
-//Authorize method
+//GetFavourites method
 func (t *Twitter) GetFavourites(consumerKey *string, consumerSecret *string) ([]anaconda.Tweet, error) {
 
 	c := oauth.NewConsumer(

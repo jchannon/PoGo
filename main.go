@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -23,6 +24,12 @@ func usage() {
 	fmt.Println("")
 	fmt.Println("In order to get your consumerkey and consumersecret, you must register an 'app' at twitter.com:")
 	fmt.Println("https://dev.twitter.com/apps/new")
+}
+
+func startWebServer() {
+	http.Handle("/", http.FileServer(http.Dir("./static")))
+	http.ListenAndServe(":3000", nil)
+
 }
 
 func main() {
@@ -56,10 +63,12 @@ func main() {
 		log.Fatal(err)
 	}
 
+	go startWebServer()
+
 	data := pocket.GetPocketRequestToken(apiKey, "http://google.co.uk")
-	pocket.AuthorizePocket(data, "http://yahoo.co.uk")
+	pocket.AuthorizePocket(data, "http://localhost:3000/")
 	// fmt.Println(data)
-	fmt.Println("(4) Press Enter when authorized")
+	fmt.Println("(4) Press Enter when authorized with Pocket.")
 	instr := ""
 	fmt.Scanln(&instr)
 	_, pocketaccesstoken := pocket.GetPocketAccessToken(apiKey, data, "http://yahoo.co.uk")
@@ -75,9 +84,10 @@ func main() {
 				if len(ext) == 0 || ext == "html" {
 
 					addUrlInTweetToPocket(apiKey, pocketaccesstoken, tweeturl.Expanded_url, tweet.Id)
-				} //else {
-				//addBasicTweetToPocket(apiKey, pocketaccesstoken, tweet)
-				//}
+				} else {
+					//addBasicTweetToPocket(apiKey, pocketaccesstoken, tweet)
+					fmt.Println("Not processed : " + tweeturl.Expanded_url)
+				}
 			}
 		} else {
 			addBasicTweetToPocket(apiKey, pocketaccesstoken, tweet)
