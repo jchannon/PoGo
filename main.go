@@ -57,8 +57,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	blah := &twitter.Twitter{}
-	favourites, err := blah.GetFavourites(consumerKey, consumerSecret)
+	twitter := &twitter.Twitter{}
+	favourites, err := twitter.GetFavourites(consumerKey, consumerSecret)
 	if err != nil {
 		log.Fatal(err)
 	}
