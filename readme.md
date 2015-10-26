@@ -1,4 +1,4 @@
-#gofavpocket
+#PoGo
 
 Written in Golang, this tool imports Twitter favourites into Pocket.
 
