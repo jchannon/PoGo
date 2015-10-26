@@ -75,12 +75,11 @@ func main() {
 		favourites = append(favourites, pagedFavourites...)
 
 		favouriteLength = len(favourites)
-		fmt.Println("we now have" + strconv.Itoa(len(favourites)))
 	}
 
 	go startWebServer()
 
-	data := pocket.GetPocketRequestToken(apiKey, "http://google.co.uk")
+	data := pocket.GetPocketRequestToken(apiKey, "http://localhost:3000/")
 	pocket.AuthorizePocket(data, "http://localhost:3000/")
 	// fmt.Println(data)
 	fmt.Println("(4) Press Enter when authorized with Pocket.")
@@ -98,7 +97,7 @@ func main() {
 
 				}
 				ext := filepath.Ext(url.Path)
-				if len(ext) == 0 || ext == "html" {
+				if len(ext) == 0 || ext == ".html" {
 					addUrlInTweetToPocket(apiKey, pocketaccesstoken, tweeturl.Expanded_url, tweet.Id)
 				} else {
 					//addBasicTweetToPocket(apiKey, pocketaccesstoken, tweet)
@@ -110,13 +109,14 @@ func main() {
 		}
 
 		break
+
 	}
 
 }
 
 func addBasicTweetToPocket(apiKey *string, accesstoken string, tweet anaconda.Tweet) {
 	pocketurl := "https://twitter.com/" + tweet.User.ScreenName + "/status/" + strconv.FormatInt(tweet.Id, 10)
-	fmt.Println(pocketurl)
+	fmt.Println("Adding to pocket : " + pocketurl)
 	pocket.AddItemToPocket(apiKey, accesstoken, pocketurl, tweet.Id)
 }
 
