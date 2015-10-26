@@ -3,6 +3,7 @@ package twitter
 import (
 	"fmt"
 	"log"
+	"net/url"
 
 	"github.com/chimeracoder/anaconda"
 	"github.com/mrjones/oauth"
@@ -10,6 +11,8 @@ import (
 
 //Twitter type
 type Twitter struct {
+	Token  string
+	Secret string
 }
 
 //GetFavourites method
@@ -43,10 +46,25 @@ func (t *Twitter) GetFavourites(consumerKey *string, consumerSecret *string) ([]
 		log.Fatal(err)
 	}
 
+	t.Token = accessToken.Token
+	t.Secret = accessToken.Secret
+
 	anaconda.SetConsumerKey(*consumerKey)
 	anaconda.SetConsumerSecret(*consumerSecret)
 	api := anaconda.NewTwitterApi(accessToken.Token, accessToken.Secret)
+	v := url.Values{}
+	v.Set("count", "200") //200 is max twitter accepts
+	return api.GetFavorites(v)
 
-	return api.GetFavorites(nil)
+}
 
+func (t *Twitter) GetPagedFavourites(consumerKey *string, consumerSecret *string, apiToken string, apiSecret string, maxid string) ([]anaconda.Tweet, error) {
+	anaconda.SetConsumerKey(*consumerKey)
+	anaconda.SetConsumerSecret(*consumerSecret)
+	api := anaconda.NewTwitterApi(apiToken, apiSecret)
+
+	v := url.Values{}
+	v.Set("count", "200")
+	v.Set("max_id", maxid)
+	return api.GetFavorites(v)
 }

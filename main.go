@@ -11,8 +11,8 @@ import (
 	"strconv"
 
 	"github.com/chimeracoder/anaconda"
-	"github.com/jchannon/PoGo/twitter"
 	"github.com/jchannon/PoGo/pocket"
+	"github.com/jchannon/PoGo/twitter"
 )
 
 func usage() {
@@ -24,12 +24,13 @@ func usage() {
 	fmt.Println("")
 	fmt.Println("In order to get your consumerkey and consumersecret, you must register an 'app' at twitter.com:")
 	fmt.Println("https://dev.twitter.com/apps/new")
+	fmt.Println("In order to get your pocketapikey, you must register an 'app' at getpocket.com:")
+	fmt.Println("https://getpocket.com/developer/")
 }
 
 func startWebServer() {
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.ListenAndServe(":3000", nil)
-
 }
 
 func main() {
@@ -63,6 +64,20 @@ func main() {
 		log.Fatal(err)
 	}
 
+	favouriteLength := len(favourites)
+
+	for favouriteLength == 200 {
+		maxid := strconv.FormatInt(favourites[len(favourites)-1].Id, 10)
+		pagedFavourites, err := twitter.GetPagedFavourites(consumerKey, consumerSecret, twitter.Token, twitter.Secret, maxid)
+		if err != nil {
+			log.Fatal(err)
+		}
+		favourites = append(favourites, pagedFavourites...)
+
+		favouriteLength = len(favourites)
+		fmt.Println("we now have" + strconv.Itoa(len(favourites)))
+	}
+
 	go startWebServer()
 
 	data := pocket.GetPocketRequestToken(apiKey, "http://google.co.uk")
@@ -74,7 +89,7 @@ func main() {
 	_, pocketaccesstoken := pocket.GetPocketAccessToken(apiKey, data, "http://yahoo.co.uk")
 
 	for _, tweet := range favourites {
-		
+
 		if len(tweet.Entities.Urls) > 0 {
 			for _, tweeturl := range tweet.Entities.Urls {
 
