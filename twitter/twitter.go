@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/ChimeraCoder/anaconda"
+	"github.com/chimeracoder/anaconda"
 	"github.com/mrjones/oauth"
 )
 

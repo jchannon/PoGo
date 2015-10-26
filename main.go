@@ -10,14 +10,14 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/ChimeraCoder/anaconda"
-	"github.com/jchannon/gofavpocket/pocket"
-	"github.com/jchannon/gofavpocket/twitter"
+	"github.com/chimeracoder/anaconda"
+	"github.com/jchannon/PoGo/twitter"
+	"github.com/jchannon/PoGo/pocket"
 )
 
 func usage() {
 	fmt.Println("Usage:")
-	fmt.Print("go run gofavpocket/main.go")
+	fmt.Print("go run main.go")
 	fmt.Print("  --consumerkey <consumerkey>")
 	fmt.Print("  --consumersecret <consumersecret>")
 	fmt.Println("  --pocketapikey <pocketapikey>")
@@ -74,15 +74,16 @@ func main() {
 	_, pocketaccesstoken := pocket.GetPocketAccessToken(apiKey, data, "http://yahoo.co.uk")
 
 	for _, tweet := range favourites {
+		
 		if len(tweet.Entities.Urls) > 0 {
 			for _, tweeturl := range tweet.Entities.Urls {
+
 				url, err := url.Parse(tweeturl.Expanded_url)
 				if err != nil {
 
 				}
 				ext := filepath.Ext(url.Path)
 				if len(ext) == 0 || ext == "html" {
-
 					addUrlInTweetToPocket(apiKey, pocketaccesstoken, tweeturl.Expanded_url, tweet.Id)
 				} else {
 					//addBasicTweetToPocket(apiKey, pocketaccesstoken, tweet)

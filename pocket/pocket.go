@@ -1,9 +1,3 @@
-/*
-
-Takes care of OAuth to the Pocket service.
-To use, need to set Pocket API consumer key as environment variable POCKET_API_KEY.
-
-*/
 package pocket
 
 import (
