@@ -105,6 +105,6 @@ func addBasicTweetToPocket(apiKey *string, accesstoken string, tweet anaconda.Tw
 }
 
 func addUrlInTweetToPocket(apiKey *string, accesstoken string, urlintweet string, Id int64) {
-	fmt.Println("Addiing to pocket : " + urlintweet)
+	fmt.Println("Adding to pocket : " + urlintweet)
 	pocket.AddItemToPocket(apiKey, accesstoken, urlintweet, Id)
 }
