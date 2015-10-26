@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 
 	"github.com/chimeracoder/anaconda"
@@ -74,18 +75,22 @@ func main() {
 		}
 		favourites = append(favourites, pagedFavourites...)
 
-		favouriteLength = len(favourites)
+		favouriteLength = len(pagedFavourites)
 	}
 
 	go startWebServer()
 
 	data := pocket.GetPocketRequestToken(apiKey, "http://localhost:3000/")
 	pocket.AuthorizePocket(data, "http://localhost:3000/")
-	// fmt.Println(data)
+
 	fmt.Println("(4) Press Enter when authorized with Pocket.")
 	instr := ""
 	fmt.Scanln(&instr)
 	_, pocketaccesstoken := pocket.GetPocketAccessToken(apiKey, data, "http://yahoo.co.uk")
+
+	fmt.Println("(5) Importing " + strconv.Itoa(len(favourites)) + " Twitter favourites into Pocket")
+
+	sort.Reverse(favourites)
 
 	for _, tweet := range favourites {
 
@@ -97,7 +102,7 @@ func main() {
 
 				}
 				ext := filepath.Ext(url.Path)
-				if len(ext) == 0 || ext == ".html" {
+				if url.Host == "github.com" || len(ext) == 0 || ext == ".html" || ext == ".md" || ext == ".pdf" || ext == ".aspx" {
 					addUrlInTweetToPocket(apiKey, pocketaccesstoken, tweeturl.Expanded_url, tweet.Id)
 				} else {
 					//addBasicTweetToPocket(apiKey, pocketaccesstoken, tweet)
@@ -107,11 +112,7 @@ func main() {
 		} else {
 			addBasicTweetToPocket(apiKey, pocketaccesstoken, tweet)
 		}
-
-		break
-
 	}
-
 }
 
 func addBasicTweetToPocket(apiKey *string, accesstoken string, tweet anaconda.Tweet) {
