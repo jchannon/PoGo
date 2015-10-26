@@ -1,17 +1,94 @@
 <html>
 <head>
     <title>Authorized</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <style>
     body {
-        font-family: "AvenirNextLTW01-Regular", helvetica, arial, sans-serif !important;
+      background: paleturquoise;
+      font-family: "AvenirNextLTW01-Regular", helvetica, arial, sans-serif !important;
+    }
+    #main {
+      display: block;
+      position: absolute;
+      top: 50%;
+      -webkit-transform: translateY(-50%);
+              transform: translateY(-50%);
+      text-align: center;
+      width: 100%;
+      width: 100vw;
+    }
+
+    #main h1 {
+      color: darkslategrey;
+      font-weight: normal;
+      -webkit-animation: bouncein .5s both .3s;
+              animation: bouncein .5s both .3s;
+    }
+    .fa-check-circle-o {
+      -webkit-animation: bouncein 1s both .5s;
+              animation: bouncein 1s both .5s;
+    }
+    .fa-twitter {
+      -webkit-animation: fadein 2s both 1s;
+              animation: fadein 2s both 1s;
+    }
+    .fa-get-pocket {
+      -webkit-animation: fadein 2s both 1.5s;
+              animation: fadein 2s both 1.5s;
+    }
+    .fa-get-pocket:before {color: #d3505a;}
+    .fa-twitter:before {color: #55acee;}
+
+    @-webkit-keyframes bouncein {
+      0% {
+        opacity: 0;
+        -webkit-transform: scale(0.1);
+                transform: scale(0.1);
+      }
+      60% {
+        opacity: 1;
+        -webkit-transform: scale(1.2);
+                transform: scale(1.2);
+      }
+      100% {
+        -webkit-transform: scale(1);
+                transform: scale(1);
+      }
+    }
+
+    @keyframes bouncein{
+      0% {
+        opacity: 0;
+        -webkit-transform: scale(0.1);
+                transform: scale(0.1);
+      }
+      60% {
+        opacity: 1;
+        -webkit-transform: scale(1.2);
+                transform: scale(1.2);
+      }
+      100% {
+        -webkit-transform: scale(1);
+                transform: scale(1);
+      }
+    }
+    @-webkit-keyframes fadein {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes fadein {
+      from { opacity: 0; }
+      to   { opacity: 1; }
     }
     </style>
 </head>
 <body>
     <div id="main">
-        <h1>Authorized</h1>
-        <img src="twitter.png"/>
-        <img src="pocket.png"/>
+        <h1>Authorized<i class="fa fa-check-circle-o"></i>
+          <i class="fa fa-twitter"></i>
+          <i class="fa fa-get-pocket"></i>
+        </h1>
+
     </div>
 </body>
 </html>
