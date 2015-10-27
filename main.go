@@ -29,29 +29,6 @@ func usage() {
 	fmt.Println("https://getpocket.com/developer/")
 }
 
-type Tweets []anaconda.Tweet
-
-func (slice Tweets) Len() int {
-	return len(slice)
-}
-
-func (slice Tweets) Less(i, j int) bool {
-	firstTime, err := slice[i].CreatedAtTime()
-	if err != nil {
-		fmt.Println("oops")
-	}
-	secondTime, err2 := slice[j].CreatedAtTime()
-	if err2 != nil {
-		fmt.Println("oops")
-	}
-
-	return firstTime.Before(secondTime)
-}
-
-func (slice Tweets) Swap(i, j int) {
-	slice[i], slice[j] = slice[j], slice[i]
-}
-
 func startWebServer() {
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.ListenAndServe(":3000", nil)
@@ -82,8 +59,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	twitter := &twitter.Twitter{}
-	favourites, err := twitter.GetFavourites(consumerKey, consumerSecret)
+	twit := &twitter.Twitter{}
+	favourites, err := twit.GetFavourites(consumerKey, consumerSecret)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -92,7 +69,7 @@ func main() {
 
 	for favouriteLength == 200 {
 		maxid := strconv.FormatInt(favourites[len(favourites)-1].Id, 10)
-		pagedFavourites, err := twitter.GetPagedFavourites(consumerKey, consumerSecret, twitter.Token, twitter.Secret, maxid)
+		pagedFavourites, err := twit.GetPagedFavourites(consumerKey, consumerSecret, twit.Token, twit.Secret, maxid)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -113,7 +90,7 @@ func main() {
 
 	fmt.Println("(5) Importing " + strconv.Itoa(len(favourites)) + " Twitter favourites into Pocket")
 
-	sortedFavourites := Tweets{}
+	sortedFavourites := twitter.Tweets{}
 	sortedFavourites = favourites
 	sort.Sort(sortedFavourites)
 
